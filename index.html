@@ -44,6 +44,7 @@
         <button onclick="insertTable()">Insert Table</button>
         <button onclick="insertImage()">Insert Image</button>
         <button onclick="exportToPDF('portrait')">Save as PDF (Portrait)</button>
+<button onclick="exportToPDF('landscape')">Save as PDF (Landscape)</button>
         <button onclick="exportToDocx()">Save as DOCX</button>
     </div>
     
@@ -100,6 +101,21 @@
             html2canvas(editor).then(canvas => {
                 let imgData = canvas.toDataURL("image/png");
                 let imgWidth = orientation === "portrait" ? 210 : 297;
+                let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                doc.addImage(imgData, "PNG", 10, 10, imgWidth - 20, imgHeight);
+                doc.save("Word_Document.pdf");
+            });
+        }
+
+  function exportToPDF(orientation) {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF({ orientation: orientation });
+
+            let editor = document.getElementById("editor");
+            html2canvas(editor).then(canvas => {
+                let imgData = canvas.toDataURL("image/png");
+                let imgWidth = orientation === "landscape" ? 297 : 210;
                 let imgHeight = (canvas.height * imgWidth) / canvas.width;
 
                 doc.addImage(imgData, "PNG", 10, 10, imgWidth - 20, imgHeight);
